@@ -1,6 +1,5 @@
 import os
 
-from cs50 import SQL
 from flask import Flask, flash, jsonify, redirect, render_template, request, session
 from flask_sqlalchemy import SQLAlchemy
 
@@ -21,9 +20,6 @@ class birthday(db.Model):
 
 with app.app_context():    
     db.create_all()
-
-# Configure CS50 Library to use SQLite database
-#db = SQL("sqlite:///birthdays.db")
 
 @app.after_request
 def after_request(response):
@@ -66,7 +62,6 @@ def index():
         if day < 0 or day > 31:
             return redirect("/")
 
-        #db.execute("INSERT INTO birthdays(name,month,day) VALUES(?, ?, ?)", name, month, day)
         new_birthday = birthday(name=name, month=month, day=day)
         db.session.add(new_birthday)
         db.session.commit()
@@ -74,9 +69,5 @@ def index():
         return redirect("/")
 
     else:
-
-        # TODO: Display the entries in the database on index.html
-        #birthdays = db.execute("SELECT * FROM birthdays")
-        birthdays = db.session.execute(db.select(birthday))
-
+        birthdays = db.session.execute(db.select(birthday)).scalars()
         return render_template("index.html", birthdays=birthdays)
