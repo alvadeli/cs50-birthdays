@@ -2,6 +2,7 @@ import os
 
 from flask import Flask, flash, jsonify, redirect, render_template, request, session
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import select
 
 # Configure application
 app = Flask(__name__)
@@ -69,5 +70,5 @@ def index():
         return redirect("/")
 
     else:
-        birthdays = db.session.execute(db.select(birthday)).scalars()
+        birthdays = db.session.execute(select(birthday)).scalars()
         return render_template("index.html", birthdays=birthdays)
